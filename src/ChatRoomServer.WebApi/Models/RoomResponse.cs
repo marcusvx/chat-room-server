@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace ChatRoomServer.WebApi.Models
 {
-    public class CategoryResponse
+    public class RoomResponse
     {
         [JsonProperty("id")]
         public int Id { get; set; }

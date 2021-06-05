@@ -9,16 +9,16 @@ using Microsoft.Extensions.Logging;
 namespace ChatRoomServer.WebApi.Controllers
 {
     [ApiController]
-    [Route("categories")]
-    public class CategoryController : ControllerBase
+    [Route("rooms")]
+    public class RoomController : ControllerBase
     {
-        private readonly ICategoryRepository repository;
+        private readonly IRoomRepository repository;
         private readonly IMapper mapper;
-        private readonly ILogger<CategoryController> logger;
+        private readonly ILogger<RoomController> logger;
 
-        public CategoryController(
-            ILogger<CategoryController> logger,
-            ICategoryRepository repository,
+        public RoomController(
+            ILogger<RoomController> logger,
+            IRoomRepository repository,
             IMapper mapper
         )
         {
@@ -28,10 +28,10 @@ namespace ChatRoomServer.WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<CategoryResponse> Get()
+        public IEnumerable<RoomResponse> Get()
         {
             var categories = this.repository.GetAll();
-            return this.mapper.Map<CategoryResponse[]>(categories);
+            return this.mapper.Map<RoomResponse[]>(categories);
         }
     }
 }

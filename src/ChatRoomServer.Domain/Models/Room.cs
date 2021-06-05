@@ -1,6 +1,6 @@
 namespace ChatRoomService.Domain.Models
 {
-    public class Category
+    public class Room
     {
         public int Id { get; set; }
 

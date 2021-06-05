@@ -3,8 +3,8 @@ using ChatRoomService.Domain.Models;
 
 namespace ChatRoomServer.Domain.Repositories
 {
-    public interface ICategoryRepository
+    public interface IRoomRepository
     {
-        IEnumerable<Category> GetAll();
+        IEnumerable<Room> GetAll();
     }
 }

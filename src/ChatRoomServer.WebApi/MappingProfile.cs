@@ -8,7 +8,7 @@ namespace ChatRoomService.WebApi
     {
         public MappingProfile()
         {
-            CreateMap<Category, CategoryResponse>();
+            CreateMap<Room, RoomResponse>();
         }
     }
 }

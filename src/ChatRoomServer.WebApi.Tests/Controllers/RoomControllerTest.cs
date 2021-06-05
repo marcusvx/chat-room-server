@@ -12,35 +12,35 @@ using System.Linq;
 
 namespace ChatRoomServer.WebApi.Tests
 {
-    public class CategoryControllerTest
+    public class RoomControllerTest
     {
-        private CategoryController controller;
-        private Mock<ICategoryRepository> categoryRepositoryMock;
-        private Mock<ILogger<CategoryController>> loggerMock;
+        private RoomController controller;
+        private Mock<IRoomRepository> categoryRepositoryMock;
+        private Mock<ILogger<RoomController>> loggerMock;
         private Mock<IMapper> mapperMock;
 
-        private static readonly IEnumerable<Category> AllCategories = new[]
+        private static readonly IEnumerable<Room> AllCategories = new[]
         {
-            new Category
+            new Room
             {
                 Id  = 9999,
                 Name = "Category 1"
             },
-            new Category {
+            new Room {
                 Id = 8888,
                 Name = "Category 2"
             }
         };
 
-        public CategoryControllerTest()
+        public RoomControllerTest()
         {
-            this.categoryRepositoryMock = new Mock<ICategoryRepository>();
-            this.loggerMock = new Mock<ILogger<CategoryController>>();
+            this.categoryRepositoryMock = new Mock<IRoomRepository>();
+            this.loggerMock = new Mock<ILogger<RoomController>>();
             this.mapperMock = new Mock<IMapper>();
 
             this.categoryRepositoryMock.Setup(c => c.GetAll()).Returns(AllCategories);
 
-            this.controller = new CategoryController(
+            this.controller = new RoomController(
                 this.loggerMock.Object,
                 this.categoryRepositoryMock.Object,
                 this.mapperMock.Object);
@@ -51,11 +51,11 @@ namespace ChatRoomServer.WebApi.Tests
         {
             // arrange
             var expected = AllCategories
-                .Select(c => new CategoryResponse { Id = c.Id, Name = c.Name })
+                .Select(c => new RoomResponse { Id = c.Id, Name = c.Name })
                 .ToArray();
 
             this.mapperMock
-                .Setup(mapper => mapper.Map<CategoryResponse[]>(AllCategories))
+                .Setup(mapper => mapper.Map<RoomResponse[]>(AllCategories))
                 .Returns(expected);
 
             // act
