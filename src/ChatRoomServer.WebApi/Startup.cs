@@ -74,6 +74,8 @@ namespace ChatRoomServer.WebApi
                 {
                     endpoints.MapControllers();
                 });
+
+            new ConfigurationBuilder().AddEnvironmentVariables();
         }
     }
 }
