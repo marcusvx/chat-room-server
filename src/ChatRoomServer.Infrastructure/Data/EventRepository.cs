@@ -14,7 +14,7 @@ namespace ChatRoomServer.Infrastructure.Data
         {
         }
 
-        public IEnumerable<EventSummary> GetHourlySummary(DateTime dateTime, int roomId)
+        public IEnumerable<EventSummary> GetHourlySummary(DateTime date, int roomId)
         {
             using (var conn = base.CreateConnection())
             {
@@ -30,11 +30,13 @@ namespace ChatRoomServer.Infrastructure.Data
                             event_type,
                             HOUR(received_at) as event_hour,
                             COUNT(event_type) as count_type,
-                            COUNT(DISTINCT(to_user_id) ) as count_user
+                            COUNT(DISTINCT(to_user_id)) as count_user
                         FROM
                             event
                         WHERE
-                            event_type <> 'HighFive' AND room_id = @RoomId
+                            event_type <> 'HighFive' AND 
+                            room_id = @RoomId AND
+                            DATE(received_at) = @Date
                         GROUP BY
                             event_type,
                             to_user_id,
@@ -48,7 +50,9 @@ namespace ChatRoomServer.Infrastructure.Data
                         FROM
                             event
                         WHERE
-                            event_type = 'HighFive' AND room_id = @RoomId
+                            event_type = 'HighFive' AND 
+                            room_id = @RoomId AND
+                            DATE(received_at) = @Date
                         GROUP BY
                             HOUR(received_at)) AS SUB_QUERY
                     ORDER BY
@@ -56,7 +60,12 @@ namespace ChatRoomServer.Infrastructure.Data
                 ";
 
 
-                var parameters = new DynamicParameters(new { RoomId = roomId });
+                var parameters = new DynamicParameters(new
+                {
+                    RoomId = roomId,
+                    Date = date.ToString("yyyy-MM-dd")
+                });
+                
                 return conn
                     .Query(query, parameters)
                     .Select(row => new EventSummary(
