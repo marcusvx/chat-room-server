@@ -14,6 +14,57 @@ namespace ChatRoomServer.Infrastructure.Data
         {
         }
 
+        public IEnumerable<Event> GetEvents(DateTime date, int roomId)
+        {
+            using (var conn = base.CreateConnection())
+            {
+                string query = @"
+                    SELECT
+                        e.id AS Id,
+                        r.id AS RoomId,
+                        r.name AS RoomName,
+                        e.received_at AS ReceivedAt,
+                        u1.id AS FromUserId,
+                        u1.name AS FromUserName,
+                        e.event_type AS EventType,
+                        u2.id AS ToUserId,
+                        u2.name AS ToUserName,
+                        ec.content AS EventComment
+                    FROM
+                        `event` AS e
+                    INNER JOIN `room` AS r ON
+                        r.id = e.room_id
+                    INNER JOIN `user` AS u1 ON
+                        u1.id = e.from_user_id
+                    LEFT JOIN `user` AS u2 ON
+                        u2.id = e.to_user_id
+                    LEFT JOIN `event_comment` AS ec ON
+                        ec.event_id = e.id
+                    WHERE
+                        r.id = @RoomId
+                        AND DATE(e.received_at) = @Date";
+
+                var parameters = new DynamicParameters(new
+                {
+                    RoomId = roomId,
+                    Date = date.ToString("yyyy-MM-dd")
+                });
+
+                return conn
+                    .Query(query, parameters)
+                    .Select(row => new Event(
+                        row.Id,
+                        new User(row.FromUserId, row.FromUserName),
+                        row.ToUserId == null ? null : new User(row.ToUserId, row.ToUserName),
+                        row.ReceivedAt,
+                        new Room(row.RoomId, row.RoomName),
+                        Enum.Parse<EventType>(row.EventType),
+                        row.EventComment
+                    ))
+                    .AsList<Event>();
+            }
+        }
+
         public IEnumerable<EventSummary> GetHourlySummary(DateTime date, int roomId)
         {
             using (var conn = base.CreateConnection())
@@ -56,8 +107,7 @@ namespace ChatRoomServer.Infrastructure.Data
                         GROUP BY
                             HOUR(received_at)) AS SUB_QUERY
                     ORDER BY
-                        event_hour;
-                ";
+                        event_hour;";
 
 
                 var parameters = new DynamicParameters(new
@@ -65,7 +115,7 @@ namespace ChatRoomServer.Infrastructure.Data
                     RoomId = roomId,
                     Date = date.ToString("yyyy-MM-dd")
                 });
-                
+
                 return conn
                     .Query(query, parameters)
                     .Select(row => new EventSummary(

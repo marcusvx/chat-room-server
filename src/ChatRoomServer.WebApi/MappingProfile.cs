@@ -11,6 +11,7 @@ namespace ChatRoomService.WebApi
         public MappingProfile()
         {
             CreateMap<Room, RoomResponse>();
+            CreateMap<Event, EventResponse>();
             CreateMap<IEnumerable<EventSummary>, HourlyEventSummaryResponse[]>().ConvertUsing((source, dest) =>
             {
                 var result = new List<HourlyEventSummaryResponse>();

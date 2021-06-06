@@ -2,8 +2,14 @@ namespace ChatRoomService.Domain.Models
 {
     public class Room
     {
-        public uint Id { get; set; }
+        public Room(uint id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
 
-        public string Name { get; set; }
+        public uint Id { get; private set; }
+
+        public string Name { get; private set; }
     }
 }

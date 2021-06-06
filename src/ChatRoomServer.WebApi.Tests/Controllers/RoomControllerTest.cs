@@ -21,15 +21,8 @@ namespace ChatRoomServer.WebApi.Tests
 
         private static readonly IEnumerable<Room> AllRooms = new[]
         {
-            new Room
-            {
-                Id  = 9999,
-                Name = "Room 1"
-            },
-            new Room {
-                Id = 8888,
-                Name = "Room 2"
-            }
+            new Room(9999, "Room 1"),
+            new Room(8888, "Room 2")
         };
 
         public RoomControllerTest()

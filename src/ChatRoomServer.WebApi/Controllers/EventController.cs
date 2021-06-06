@@ -45,7 +45,27 @@ namespace ChatRoomServer.WebApi.Controllers
             var date = new DateTime(year, month, day);
             var summary = this.repository.GetHourlySummary(date, roomId.Value);
             var result = this.mapper.Map<IEnumerable<EventSummary>, HourlyEventSummaryResponse[]>(summary);
-            
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{year}/{month}/{day}")]
+        public IActionResult Get(
+           int year,
+           int month,
+           int day,
+           [FromQuery(Name = "room")] int? roomId)
+        {
+            if (roomId == null)
+            {
+                return BadRequest("Room Id is required");
+            }
+
+            var date = new DateTime(year, month, day);
+            var events = this.repository.GetEvents(date, roomId.Value);
+            var result = this.mapper.Map<IEnumerable<Event>, EventResponse[]>(events);
+
             return Ok(result);
         }
     }

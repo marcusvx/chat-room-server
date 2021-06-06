@@ -19,14 +19,9 @@ namespace ChatRoomServer.Infrastructure.Data
             {
                 return conn
                     .Query("SELECT id as Id, name as Name FROM room")
-                    .Select(row => new Room
-                    {
-                        Id = row.Id,
-                        Name = row.Name
-                    })
+                    .Select(row => new Room(row.Id, row.Name))
                     .AsList<Room>();
             }
-
         }
     }
 }

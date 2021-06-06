@@ -2,8 +2,14 @@ namespace ChatRoomService.Domain.Models
 {
     public class User
     {
-        public uint Id { get; set; }
+        public User(uint id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
 
-        public string Name { get; set; }
+        public uint Id { get; private set; }
+
+        public string Name { get; private set; }
     }
 }
