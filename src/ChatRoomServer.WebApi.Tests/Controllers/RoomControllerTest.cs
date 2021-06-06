@@ -62,7 +62,7 @@ namespace ChatRoomServer.WebApi.Tests
             var result = this.controller.Get();
 
             // assert
-            result.Should().ContainInOrder(expected);
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

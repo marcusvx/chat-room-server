@@ -5,22 +5,35 @@ namespace ChatRoomServer.WebApi.Models
 {
     public class HourlyEventSummaryItem
     {
+        public HourlyEventSummaryItem(string eventType, int eventCount, int userCount)
+        {
+            this.EventType = eventType;
+            this.EventCount = eventCount;
+            this.UserCount = userCount;
+        }
+
         [JsonProperty("event_type")]
-        public string EventType { get; set; }
+        public string EventType { get; private set; }
 
         [JsonProperty("event_count")]
-        public int EventCount { get; set; }
+        public int EventCount { get; private set; }
 
         [JsonProperty("user_count")]
-        public int UserCount { get; set; }
+        public int UserCount { get; private set; }
     }
 
     public class HourlyEventSummaryResponse
     {
+        public HourlyEventSummaryResponse(int hour, IEnumerable<HourlyEventSummaryItem> items)
+        {
+            this.Hour = hour;
+            this.Items = items;
+        }
+
         [JsonProperty("hour")]
-        public int Hour { get; set; }
+        public int Hour { get; private set; }
 
         [JsonProperty("items")]
-        public IEnumerable<HourlyEventSummaryItem> Items { get; set; }
+        public IEnumerable<HourlyEventSummaryItem> Items { get; private set; }
     }
 }

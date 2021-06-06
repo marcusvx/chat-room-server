@@ -22,14 +22,14 @@ namespace ChatRoomServer.WebApi.Tests
         private Mock<IMapper> mapperMock;
 
         private static EventSummary[] EventsSummaries = new[] {
-                 new EventSummary(EventType.Enter, 13, 2, 0),
-                 new EventSummary(EventType.Comment, 13, 8, 0),
-                 new EventSummary(EventType.HighFive, 13, 2, 3),
-                 new EventSummary(EventType.Leave, 13, 1, 0),
-                 new EventSummary(EventType.Comment, 14, 5, 0),
-                 new EventSummary(EventType.HighFive, 14, 1, 1),
-                 new EventSummary(EventType.Leave, 14, 1, 0),
-            };
+            new EventSummary(EventType.Enter, 13, 2, 0),
+            new EventSummary(EventType.Comment, 13, 8, 0),
+            new EventSummary(EventType.HighFive, 13, 2, 3),
+            new EventSummary(EventType.Leave, 13, 1, 0),
+            new EventSummary(EventType.Comment, 14, 5, 0),
+            new EventSummary(EventType.HighFive, 14, 1, 1),
+            new EventSummary(EventType.Leave, 14, 1, 0),
+        };
 
         public EventControllerTest()
         {
@@ -54,15 +54,15 @@ namespace ChatRoomServer.WebApi.Tests
 
             this.eventRepositoryMock.Setup(m => m.GetHourlySummary(new DateTime(year, month, day), roomId)).Returns(EventsSummaries);
             var expected = EventsSummaries.GroupBy(s => s.EventHour).Select(group => new HourlyEventSummaryResponse
-            {
-                Hour = group.Key,
-                Items = group.Select(item => new HourlyEventSummaryItem
-                {
-                    EventType = item.EventType.ToString(),
-                    EventCount = item.EventCount,
-                    UserCount = item.UserCount
-                })
-            }).ToArray();
+            (
+                hour: group.Key,
+                items: group.Select(item => new HourlyEventSummaryItem
+                (
+                    eventType: item.EventType.ToString(),
+                    eventCount: item.EventCount,
+                    userCount: item.UserCount
+                ))
+            )).ToArray();
 
             this.mapperMock.Setup(m => m.Map<IEnumerable<EventSummary>, HourlyEventSummaryResponse[]>(EventsSummaries)).Returns(expected);
 
@@ -72,7 +72,7 @@ namespace ChatRoomServer.WebApi.Tests
             // expect
             result.Should().BeOfType<OkObjectResult>();
             var actualResult = (result as OkObjectResult).Value as HourlyEventSummaryResponse[];
-            actualResult.Should().Equal(expected);
+            actualResult.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace ChatRoomServer.WebApi.Tests
             var result = this.controller.GetHourlySummary(year, month, day, null);
 
             // expect
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<BadRequestObjectResult>();
         }
     }
 }

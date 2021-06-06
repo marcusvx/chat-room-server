@@ -16,16 +16,15 @@ namespace ChatRoomService.WebApi
                 var result = new List<HourlyEventSummaryResponse>();
                 return source
                     .GroupBy(x => x.EventHour)
-                    .Select(g => new HourlyEventSummaryResponse
-                    {
-                        Hour = g.Key,
-                        Items = g.Select(x => new HourlyEventSummaryItem
-                        {
-                            EventType = x.EventType.ToString(),
-                            EventCount = x.EventCount,
-                            UserCount = x.UserCount
-                        })
-                    })
+                    .Select(g => new HourlyEventSummaryResponse(
+                        hour: g.Key,
+                        items: g.Select(x => new HourlyEventSummaryItem
+                        (
+                            eventType: x.EventType.ToString(),
+                            eventCount: x.EventCount,
+                            userCount: x.UserCount
+                        ))
+                    ))
                     .ToArray();
             });
         }
