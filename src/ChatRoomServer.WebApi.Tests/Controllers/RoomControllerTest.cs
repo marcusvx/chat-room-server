@@ -19,16 +19,16 @@ namespace ChatRoomServer.WebApi.Tests
         private Mock<ILogger<RoomController>> loggerMock;
         private Mock<IMapper> mapperMock;
 
-        private static readonly IEnumerable<Room> AllCategories = new[]
+        private static readonly IEnumerable<Room> AllRooms = new[]
         {
             new Room
             {
                 Id  = 9999,
-                Name = "Category 1"
+                Name = "Room 1"
             },
             new Room {
                 Id = 8888,
-                Name = "Category 2"
+                Name = "Room 2"
             }
         };
 
@@ -38,7 +38,7 @@ namespace ChatRoomServer.WebApi.Tests
             this.loggerMock = new Mock<ILogger<RoomController>>();
             this.mapperMock = new Mock<IMapper>();
 
-            this.categoryRepositoryMock.Setup(c => c.GetAll()).Returns(AllCategories);
+            this.categoryRepositoryMock.Setup(c => c.GetAll()).Returns(AllRooms);
 
             this.controller = new RoomController(
                 this.loggerMock.Object,
@@ -50,12 +50,12 @@ namespace ChatRoomServer.WebApi.Tests
         public void Get_Success_ShouldReturnAllCategories()
         {
             // arrange
-            var expected = AllCategories
+            var expected = AllRooms
                 .Select(c => new RoomResponse { Id = c.Id, Name = c.Name })
                 .ToArray();
 
             this.mapperMock
-                .Setup(mapper => mapper.Map<RoomResponse[]>(AllCategories))
+                .Setup(mapper => mapper.Map<RoomResponse[]>(AllRooms))
                 .Returns(expected);
 
             // act

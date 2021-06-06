@@ -30,8 +30,8 @@ namespace ChatRoomServer.WebApi.Controllers
         [HttpGet]
         public IEnumerable<RoomResponse> Get()
         {
-            var categories = this.repository.GetAll();
-            return this.mapper.Map<RoomResponse[]>(categories);
+            var rooms = this.repository.GetAll();
+            return this.mapper.Map<RoomResponse[]>(rooms);
         }
     }
 }
