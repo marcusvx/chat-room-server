@@ -12,13 +12,13 @@ namespace ChatRoomServer.WebApi.Models
             this.UserCount = userCount;
         }
 
-        [JsonProperty("event_type")]
+        [JsonProperty("eventType")]
         public string EventType { get; private set; }
 
-        [JsonProperty("event_count")]
+        [JsonProperty("eventCount")]
         public int EventCount { get; private set; }
 
-        [JsonProperty("user_count")]
+        [JsonProperty("userCount")]
         public int UserCount { get; private set; }
     }
 

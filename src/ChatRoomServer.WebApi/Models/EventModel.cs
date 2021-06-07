@@ -27,19 +27,19 @@ namespace ChatRoomServer.WebApi.Models
         [JsonProperty("id")]
         public uint Id { get; set; }
 
-        [JsonProperty("received_at")]
+        [JsonProperty("receivedAt")]
         public DateTimeOffset ReceivedAt { get; set; }
 
-        [JsonProperty("room_name")]
+        [JsonProperty("roomName")]
         public string RoomName { get; set; }
 
-        [JsonProperty("from_user_name")]
+        [JsonProperty("fromUserName")]
         public string FromUserName { get; set; }
 
-        [JsonProperty("to_user_name")]
+        [JsonProperty("toUserName")]
         public string ToUserName { get; set; }
 
-        [JsonProperty("event_type")]
+        [JsonProperty("eventType")]
         public string EventType { get; set; }
 
         [JsonProperty("comment")]
