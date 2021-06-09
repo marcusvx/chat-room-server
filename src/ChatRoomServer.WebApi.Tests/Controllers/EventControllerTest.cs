@@ -66,9 +66,11 @@ namespace ChatRoomServer.WebApi.Tests
             int year = 2020;
             int month = 11;
             int day = 12;
+            int timezoneOffset = -3;
             int roomId = 1;
 
-            this.eventRepositoryMock.Setup(m => m.GetHourlySummary(new DateTime(year, month, day), roomId)).Returns(EventsSummaries);
+            var dateTimeOffset = new DateTimeOffset(new DateTime(year, month, day), new TimeSpan(timezoneOffset, 0, 0));
+            this.eventRepositoryMock.Setup(m => m.GetHourlySummary(dateTimeOffset, roomId)).Returns(EventsSummaries);
             var expected = EventsSummaries.GroupBy(s => s.EventHour).Select(group => new HourlyEventSummaryResponse
             (
                 hour: group.Key,
@@ -83,7 +85,7 @@ namespace ChatRoomServer.WebApi.Tests
             this.mapperMock.Setup(m => m.Map<IEnumerable<EventSummary>, HourlyEventSummaryResponse[]>(EventsSummaries)).Returns(expected);
 
             // act
-            var result = this.controller.GetHourlySummary(year, month, day, roomId);
+            var result = this.controller.GetHourlySummary(year, month, day, roomId, timezoneOffset);
 
             // expect
             result.Should().BeOfType<OkObjectResult>();
@@ -109,8 +111,10 @@ namespace ChatRoomServer.WebApi.Tests
             int month = 9;
             int day = 5;
             int roomId = 2;
+            int timezoneOffset = 5;
 
-            this.eventRepositoryMock.Setup(m => m.GetEvents(new DateTime(year, month, day), roomId)).Returns(Events);
+            var dateTimeOffset = new DateTimeOffset(new DateTime(year, month, day), new TimeSpan(timezoneOffset, 0, 0));
+            this.eventRepositoryMock.Setup(m => m.GetEvents(dateTimeOffset, roomId)).Returns(Events);
             var expected = new EventResponse[] {
                 new EventResponse(1, Events[0].ReceivedAt, RoomOne.Name, UserJane.Name, null, "Enter", null),
                 new EventResponse(2, Events[1].ReceivedAt, RoomOne.Name, UserJohn.Name, null, "Enter", null),
@@ -124,7 +128,7 @@ namespace ChatRoomServer.WebApi.Tests
             this.mapperMock.Setup(m => m.Map<IEnumerable<Event>, EventResponse[]>(Events)).Returns(expected);
 
             // act
-            var result = this.controller.Get(year, month, day, roomId);
+            var result = this.controller.Get(year, month, day, roomId, timezoneOffset);
 
             // expect
             result.Should().BeOfType<OkObjectResult>();

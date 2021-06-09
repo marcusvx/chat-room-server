@@ -50,6 +50,18 @@ namespace ChatRoomServer.WebApi
                             Version = "v1"
                         });
                 });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +78,7 @@ namespace ChatRoomServer.WebApi
                             "ChatRoomServer.WebApi v1"));
             }
 
+            app.UseCors();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

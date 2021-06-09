@@ -6,8 +6,8 @@ namespace ChatRoomServer.Domain.Repositories
 {
     public interface IEventRepository
     {
-        IEnumerable<EventSummary> GetHourlySummary(DateTime date, int roomId);
+        IEnumerable<EventSummary> GetHourlySummary(DateTimeOffset date, int roomId);
 
-        IEnumerable<Event> GetEvents(DateTime date, int roomId);
+        IEnumerable<Event> GetEvents(DateTimeOffset date, int roomId);
     }
 }

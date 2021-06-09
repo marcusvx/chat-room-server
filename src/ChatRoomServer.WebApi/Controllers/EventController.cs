@@ -35,15 +35,18 @@ namespace ChatRoomServer.WebApi.Controllers
             int year,
             int month,
             int day,
-            [FromQuery(Name = "room")] int? roomId)
+            [FromQuery(Name = "room")] int? roomId,
+            [FromHeader(Name = "X-Timezone-Offset")] int timezoneOffset = 0)
         {
             if (roomId == null)
             {
                 return BadRequest("Room Id is required");
             }
 
-            var date = new DateTime(year, month, day);
-            var summary = this.repository.GetHourlySummary(date, roomId.Value);
+            var dateTimeOffset = new DateTimeOffset(
+                new DateTime(year, month, day),
+                new TimeSpan(timezoneOffset, 0, 0));
+            var summary = this.repository.GetHourlySummary(dateTimeOffset, roomId.Value);
             var result = this.mapper.Map<IEnumerable<EventSummary>, HourlyEventSummaryResponse[]>(summary);
 
             return Ok(result);
@@ -55,15 +58,18 @@ namespace ChatRoomServer.WebApi.Controllers
            int year,
            int month,
            int day,
-           [FromQuery(Name = "room")] int? roomId)
+           [FromQuery(Name = "room")] int? roomId,
+           [FromHeader(Name = "X-Timezone-Offset")] int timezoneOffset = 0)
         {
             if (roomId == null)
             {
                 return BadRequest("Room Id is required");
             }
 
-            var date = new DateTime(year, month, day);
-            var events = this.repository.GetEvents(date, roomId.Value);
+            var dateTimeOffset = new DateTimeOffset(
+                new DateTime(year, month, day),
+                new TimeSpan(timezoneOffset, 0, 0));
+            var events = this.repository.GetEvents(dateTimeOffset, roomId.Value);
             var result = this.mapper.Map<IEnumerable<Event>, EventResponse[]>(events);
 
             return Ok(result);
