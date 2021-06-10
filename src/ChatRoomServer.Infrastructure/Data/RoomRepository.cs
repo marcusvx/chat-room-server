@@ -13,6 +13,19 @@ namespace ChatRoomServer.Infrastructure.Data
         {
         }
 
+        public Room Get(uint roomId)
+        {
+            using (var conn = base.CreateConnection())
+            {
+                return conn
+                    .Query(
+                        "SELECT id as Id, name as Name FROM room WHERE id = @RoomId",
+                        new { RoomId = roomId })
+                    .Select(row => new Room(row.Id, row.Name))
+                    .FirstOrDefault();
+            }
+        }
+
         public IEnumerable<Room> GetAll()
         {
             using (var conn = base.CreateConnection())

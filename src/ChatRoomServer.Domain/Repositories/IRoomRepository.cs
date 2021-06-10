@@ -6,5 +6,7 @@ namespace ChatRoomServer.Domain.Repositories
     public interface IRoomRepository
     {
         IEnumerable<Room> GetAll();
+
+        Room Get(uint roomId);
     }
 }

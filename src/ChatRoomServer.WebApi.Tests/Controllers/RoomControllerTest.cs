@@ -40,7 +40,7 @@ namespace ChatRoomServer.WebApi.Tests
         }
 
         [Fact]
-        public void Get_Success_ShouldReturnAllCategories()
+        public void GetAll_Success_ShouldReturnAllRoom()
         {
             // arrange
             var expected = AllRooms
@@ -52,7 +52,27 @@ namespace ChatRoomServer.WebApi.Tests
                 .Returns(expected);
 
             // act
-            var result = this.controller.Get();
+            var result = this.controller.GetAll();
+
+            // assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+
+        [Fact]
+        public void Get_Success_ShouldReturnRoom()
+        {
+            // arrange
+            var room = AllRooms.First();
+            var expected = new RoomResponse { Id = room.Id, Name = room.Name };
+            this.categoryRepositoryMock.Setup(c => c.Get(room.Id)).Returns(room);
+
+            this.mapperMock
+                .Setup(mapper => mapper.Map<RoomResponse>(room))
+                .Returns(expected);
+
+            // act
+            var result = this.controller.Get(room.Id);
 
             // assert
             result.Should().BeEquivalentTo(expected);
