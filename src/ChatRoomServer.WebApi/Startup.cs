@@ -77,9 +77,13 @@ namespace ChatRoomServer.WebApi
                             .SwaggerEndpoint("/swagger/v1/swagger.json",
                             "ChatRoomServer.WebApi v1"));
             }
-
+            else
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseCors();
-            app.UseHttpsRedirection();
+
             app.UseRouting();
             app.UseAuthorization();
             app
