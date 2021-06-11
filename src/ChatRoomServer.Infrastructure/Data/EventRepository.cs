@@ -23,9 +23,8 @@ namespace ChatRoomServer.Infrastructure.Data
 
         public IEnumerable<Event> GetEvents(DateTimeOffset dateTime, int roomId)
         {
-            using (var conn = base.CreateConnection())
-            {
-                string query = @"
+            using var conn = base.CreateConnection();
+            string query = @"
                     SELECT
                         e.id AS Id,
                         r.id AS RoomId,
@@ -53,29 +52,27 @@ namespace ChatRoomServer.Infrastructure.Data
                             BETWEEN @StartDatetime AND @EndDatetime
                     ORDER BY e.received_at";
 
-                var parameters = new DynamicParameters(
-                       GetParameters(roomId, dateTime));
+            var parameters = new DynamicParameters(
+                   GetParameters(roomId, dateTime));
 
-                return conn
-                    .Query(query, parameters)
-                    .Select(row => new Event(
-                        row.Id,
-                        new User(row.FromUserId, row.FromUserName),
-                        row.ToUserId == null ? null : new User(row.ToUserId, row.ToUserName),
-                        row.ReceivedAt,
-                        new Room(row.RoomId, row.RoomName),
-                        Enum.Parse<EventType>(row.EventType),
-                        row.EventComment
-                    ))
-                    .AsList<Event>();
-            }
+            return conn
+                .Query(query, parameters)
+                .Select(row => new Event(
+                    row.Id,
+                    new User(row.FromUserId, row.FromUserName),
+                    row.ToUserId == null ? null : new User(row.ToUserId, row.ToUserName),
+                    row.ReceivedAt,
+                    new Room(row.RoomId, row.RoomName),
+                    Enum.Parse<EventType>(row.EventType),
+                    row.EventComment
+                ))
+                .AsList<Event>();
         }
 
         public IEnumerable<EventSummary> GetHourlySummary(DateTimeOffset dateTime, int roomId)
         {
-            using (var conn = base.CreateConnection())
-            {
-                string query = @"
+            using var conn = base.CreateConnection();
+            string query = @"
                     SELECT
                         event_type AS EventType,
                         event_hour AS EventHour,
@@ -117,18 +114,17 @@ namespace ChatRoomServer.Infrastructure.Data
                     ORDER BY
                         event_hour;";
 
-                var parameters = new DynamicParameters(
-                    GetParameters(roomId, dateTime));
+            var parameters = new DynamicParameters(
+                GetParameters(roomId, dateTime));
 
-                return conn
-                    .Query(query, parameters)
-                    .Select(row => new EventSummary(
-                        Enum.Parse<EventType>(row.EventType),
-                        (int)row.EventHour,
-                        (int)row.EventCount,
-                        (int)row.UserCount))
-                    .AsList<EventSummary>();
-            }
+            return conn
+                .Query(query, parameters)
+                .Select(row => new EventSummary(
+                    Enum.Parse<EventType>(row.EventType),
+                    (int)row.EventHour,
+                    (int)row.EventCount,
+                    (int)row.UserCount))
+                .AsList<EventSummary>();
         }
 
         private object GetParameters(int roomId, DateTimeOffset dateTime)

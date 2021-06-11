@@ -153,35 +153,33 @@ namespace DataGenerator.Console
         private void CreateEvent(EventType eventType, object data)
         {
 
-            using (var connection = Connect(config))
+            using var connection = Connect(config);
+            switch (eventType)
             {
-                switch (eventType)
-                {
-                    case EventType.Enter:
-                        connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
+                case EventType.Enter:
+                    connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
                                 VALUES (@RoomId, @Date, @FromUserId, 'Enter', null);", data);
-                        break;
+                    break;
 
-                    case EventType.Comment:
-                        connection.Execute(
-                            @"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
+                case EventType.Comment:
+                    connection.Execute(
+                        @"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
                               VALUES (@RoomId, @Date, @FromUserId, 'Comment', null);
                               
                               INSERT INTO event_comment(`event_id`, `content`)
                               VALUES (LAST_INSERT_ID(), @Comment); ", data);
 
-                        break;
+                    break;
 
-                    case EventType.HighFive:
-                        connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
+                case EventType.HighFive:
+                    connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
                                 VALUES (@RoomId, @Date, @FromUserId, 'HighFive', @ToUserId);", data);
-                        break;
+                    break;
 
-                    case EventType.Leave:
-                        connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
+                case EventType.Leave:
+                    connection.Execute(@"INSERT INTO event(`room_id`, `received_at`, `from_user_id`, `event_type`, `to_user_id`)
                                 VALUES (@RoomId, @Date, @FromUserId, 'Leave', null);", data);
-                        break;
-                }
+                    break;
             }
         }
 
@@ -230,10 +228,15 @@ namespace DataGenerator.Console
                 new Room(9,  "Politics"),
             };
 
-            using (var connection = Connect(config))
+            try
             {
+                using var connection = Connect(config);
                 connection.Open();
                 connection.Execute("INSERT INTO room (id, name) VALUES (@Id, @Name)", rooms);
+            }
+            catch (Exception)
+            {
+                System.Console.WriteLine("Failed to insert rooms, ignoring since they may be already created.");
             }
 
             return rooms;
